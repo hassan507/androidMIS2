@@ -1,5 +1,6 @@
 package pk.org.cerp.mischool.mischoolcompanion
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -7,8 +8,14 @@ import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.beust.klaxon.Klaxon
@@ -19,6 +26,9 @@ const val TAG = "MISchool-Companion"
 const val MY_PERMISSIONS_SEND_SMS = 1
 const val filename = "pending_messages.json"
 const val logFileName = "logFile.txt"
+
+private var list: RecyclerView? = null
+private var country: ArrayList<String>? = null
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,8 +46,11 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "HELLOOOO")
         Log.d(TAG, intent.action)
 
+
+
+
         val logMessages = readLogMessages()
-        val tv = findViewById<TextView>(R.id.logBox)
+        val tv = findViewById<TextView>(R.id.logtext)
         tv.text = logMessages
         tv.movementMethod = ScrollingMovementMethod()
 
@@ -109,11 +122,12 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread {
             run {
                 Log.d(TAG, "doing shit on thread....")
-                val tv = findViewById<TextView>(R.id.logBox)
+                val tv = findViewById<TextView>(R.id.logtext)
                 tv.setText(text)
             }
         }
     }
+
 
 
     private fun appendMessagesToFile( messages : List<SMSItem>) {
